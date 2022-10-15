@@ -12,12 +12,8 @@ import java.util.List;
 import java.util.Scanner;
 import java.util.function.DoubleToIntFunction;
 
-
-/**
- * A simple interactive 2D graph implementation. 
- * @author paf
- */
-public class SimpleGraph extends JPanel {
+//Original library by pa1511 https://github.com/pa1511/Simple-2D-Graph-for-Java modified for this project
+public class Plane extends JPanel {
 
     private double shiftX = 0.025;
     private double shiftY = 0.025;
@@ -40,15 +36,15 @@ public class SimpleGraph extends JPanel {
     private JFrame frame;
 
 
-    public SimpleGraph() {
+    public Plane() {
         this(10,10);
     }
 
-    public SimpleGraph(double maxValueX, double maxValueY) {
+    public Plane(double maxValueX, double maxValueY) {
         this(maxValueX,maxValueY,1.0,1.0);
     }
 
-    public SimpleGraph(double maxValueX, double maxValueY, double gridSpreadX, double gridSpreadY) {
+    public Plane(double maxValueX, double maxValueY, double gridSpreadX, double gridSpreadY) {
         this.maxValueX = maxValueX;
         this.maxValueY = maxValueY;
 
@@ -83,7 +79,7 @@ public class SimpleGraph extends JPanel {
             @Override
             public void actionPerformed(ActionEvent e) {
                 GlassChunkPanel glassChunkPanel = new GlassChunkPanel();
-                int option = JOptionPane.showConfirmDialog(SimpleGraph.this, glassChunkPanel, "Graph settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                int option = JOptionPane.showConfirmDialog(Plane.this, glassChunkPanel, "Graph settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 if(option==JOptionPane.OK_OPTION){
                     glassChunk = new Point((Integer)glassChunkPanel.x.getValue(), (Integer)glassChunkPanel.z.getValue());
                     glassChunkPanel.updateGraph();
@@ -144,7 +140,7 @@ public class SimpleGraph extends JPanel {
 
                 SettingsPanel settingsPanel = new SettingsPanel();
 
-                int option = JOptionPane.showConfirmDialog(SimpleGraph.this, settingsPanel, "Graph settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
+                int option = JOptionPane.showConfirmDialog(Plane.this, settingsPanel, "Graph settings", JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE);
                 if(option==JOptionPane.OK_OPTION){
                     settingsPanel.updateGraph();
                 }
@@ -156,7 +152,7 @@ public class SimpleGraph extends JPanel {
             @Override
             public void doWithSelectedDirectory(File selectedFile) {
                 if(!selectedFile.getName().endsWith(".csv")) {
-                    JOptionPane.showMessageDialog(SimpleGraph.this, "Must be a CSV obtained with /loadedChunks dump!");
+                    JOptionPane.showMessageDialog(Plane.this, "Must be a CSV obtained with /loadedChunks dump!");
                 } else {
                     try {
                         Scanner sc = new Scanner(selectedFile);
@@ -249,14 +245,14 @@ public class SimpleGraph extends JPanel {
                 double startY = getYValueFor(b);
 
 
-                double moveX = rotation*SimpleGraph.this.maxValueX*0.1;
-                SimpleGraph.this.maxValueX += moveX;
-                double moveY = rotation*SimpleGraph.this.maxValueY*0.1;
-                SimpleGraph.this.maxValueY += moveY;
+                double moveX = rotation* Plane.this.maxValueX*0.1;
+                Plane.this.maxValueX += moveX;
+                double moveY = rotation* Plane.this.maxValueY*0.1;
+                Plane.this.maxValueY += moveY;
 
 
-                shiftX = d-startX/SimpleGraph.this.maxValueX;
-                shiftY = 1.0-b-startY/SimpleGraph.this.maxValueY;
+                shiftX = d-startX/ Plane.this.maxValueX;
+                shiftY = 1.0-b-startY/ Plane.this.maxValueY;
 
                 repaint();
             }
@@ -269,10 +265,6 @@ public class SimpleGraph extends JPanel {
 
     public void addShape(IGraphShape graphShape) {
         shapes.add(graphShape);
-    }
-
-    public void removeShape(IGraphShape graphShape) {
-        shapes.remove(graphShape);
     }
 
     public void removeAllShapes() {
@@ -358,11 +350,11 @@ public class SimpleGraph extends JPanel {
     }
 
     private double getYValueFor(double percentageOfHeight) {
-        return (1.0-shiftY-percentageOfHeight)*SimpleGraph.this.maxValueY;
+        return (1.0-shiftY-percentageOfHeight)* Plane.this.maxValueY;
     }
 
     private double getXValueFor(double percentageOfWidth) {
-        return (percentageOfWidth-shiftX)*SimpleGraph.this.maxValueX;
+        return (percentageOfWidth-shiftX)* Plane.this.maxValueX;
     }
 
     private int calculateY(int yCoordinateStartHeight, double value) {
@@ -386,11 +378,11 @@ public class SimpleGraph extends JPanel {
 
         public SettingsPanel() {
             setLayout(new GridLayout(0, 2));
-            maxXSpinner = new JSpinner(new SpinnerNumberModel(SimpleGraph.this.maxValueX, 0.01, 1e6, 0.001));
-            maxYSpinner = new JSpinner(new SpinnerNumberModel(SimpleGraph.this.maxValueY, 0.01, 1e6, 0.001));
-            stepXSpinner = new JSpinner(new SpinnerNumberModel(SimpleGraph.this.gridSpreadX, 0.001, 1e3, 0.001));
-            stepYSpinner = new JSpinner(new SpinnerNumberModel(SimpleGraph.this.gridSpreadY, 0.001, 1e3, 0.001));
-            pointSizeSpinner = new JSpinner(new SpinnerNumberModel(SimpleGraph.this.pointSize, 2, 20, 1));
+            maxXSpinner = new JSpinner(new SpinnerNumberModel(Plane.this.maxValueX, 0.01, 1e6, 0.001));
+            maxYSpinner = new JSpinner(new SpinnerNumberModel(Plane.this.maxValueY, 0.01, 1e6, 0.001));
+            stepXSpinner = new JSpinner(new SpinnerNumberModel(Plane.this.gridSpreadX, 0.001, 1e3, 0.001));
+            stepYSpinner = new JSpinner(new SpinnerNumberModel(Plane.this.gridSpreadY, 0.001, 1e3, 0.001));
+            pointSizeSpinner = new JSpinner(new SpinnerNumberModel(Plane.this.pointSize, 2, 20, 1));
 
             add(new JLabel("Max X value: "));
             add(maxXSpinner);
@@ -405,13 +397,13 @@ public class SimpleGraph extends JPanel {
         }
 
         public void updateGraph(){
-            SimpleGraph.this.maxValueX = (Double) maxXSpinner.getValue();
-            SimpleGraph.this.maxValueY = (Double) maxYSpinner.getValue();
-            SimpleGraph.this.gridSpreadX = (Double) stepXSpinner.getValue();
-            SimpleGraph.this.gridSpreadY = (Double) stepYSpinner.getValue();
-            SimpleGraph.this.pointSize = (Integer) pointSizeSpinner.getValue();
+            Plane.this.maxValueX = (Double) maxXSpinner.getValue();
+            Plane.this.maxValueY = (Double) maxYSpinner.getValue();
+            Plane.this.gridSpreadX = (Double) stepXSpinner.getValue();
+            Plane.this.gridSpreadY = (Double) stepYSpinner.getValue();
+            Plane.this.pointSize = (Integer) pointSizeSpinner.getValue();
 
-            SimpleGraph.this.repaint();
+            Plane.this.repaint();
         }
 
     }
@@ -432,7 +424,7 @@ public class SimpleGraph extends JPanel {
         }
 
         public void updateGraph() {
-            SimpleGraph.this.glassChunk = new Point((Integer) (x.getValue()), (Integer) (z.getValue()));
+            Plane.this.glassChunk = new Point((Integer) (x.getValue()), (Integer) (z.getValue()));
         }
     }
 
@@ -471,21 +463,16 @@ public class SimpleGraph extends JPanel {
     public class Chunk implements IGraphShape, Comparable {
 
         private final Point pos;
-        private final int index;
-        private final int hash;
         public final int difference;
         private final long key;
-        private final boolean clustered = true;
         public boolean colorOverride;
         public Color colorOverrideC;
         public int amountOfClustering;
 
         public Chunk(long index, long key, long x, long y, long hash) {
-            this.index = (int)index;
             this.key = key;
             this.pos = new Point((int)x, (int)y);
-            this.hash = (int)hash;
-            this.difference = this.index - this.hash;
+            this.difference = (int) (index - hash);
             this.amountOfClustering = 0;
         }
 
@@ -496,19 +483,18 @@ public class SimpleGraph extends JPanel {
         @Override
         public void draw(Graphics g, DoubleToIntFunction xValueToScreenPosition, DoubleToIntFunction yValueToScreenPosition) {
             //optimization so your computer doesn't break
-            if (xValueToScreenPosition.applyAsInt(pos.x - 1) > SimpleGraph.this.frame.getWidth() || yValueToScreenPosition.applyAsInt(-pos.y + 1) > SimpleGraph.this.frame.getHeight() + 24 || xValueToScreenPosition.applyAsInt(pos.x) < 0 || yValueToScreenPosition.applyAsInt(-pos.y) < 0)
+            if (xValueToScreenPosition.applyAsInt(pos.x - 1) > Plane.this.frame.getWidth() || yValueToScreenPosition.applyAsInt(-pos.y + 1) > Plane.this.frame.getHeight() + 24 || xValueToScreenPosition.applyAsInt(pos.x) < 0 || yValueToScreenPosition.applyAsInt(-pos.y) < 0)
                 return;
 
-            if (clustered && !colorOverride) {
+            if (!colorOverride) {
                 g.setColor(new Color(difference / 20, 0, 0));
-            } else if (colorOverride) {
+            } else {
                 g.setColor(colorOverrideC);
             }
-            int width, height;
 
 
-            width = (xValueToScreenPosition.applyAsInt(pos.x) - xValueToScreenPosition.applyAsInt(pos.x + 1)) - 1;
-            height = yValueToScreenPosition.applyAsInt(-pos.y) - yValueToScreenPosition.applyAsInt(-pos.y + 1);
+            int width = (xValueToScreenPosition.applyAsInt(pos.x) - xValueToScreenPosition.applyAsInt(pos.x + 1)) - 1;
+            int height = yValueToScreenPosition.applyAsInt(-pos.y) - yValueToScreenPosition.applyAsInt(-pos.y + 1);
             g.drawRect(xValueToScreenPosition.applyAsInt(pos.x), yValueToScreenPosition.applyAsInt(-pos.y + 1), width - 1, height);
             g.setColor(Color.gray);
             g.setFont(g.getFont().deriveFont(7f));
